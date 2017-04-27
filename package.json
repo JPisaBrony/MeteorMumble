@@ -1,0 +1,17 @@
+{
+  "name": "meteormumble",
+  "private": true,
+  "scripts": {
+    "start": "meteor run"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.20.0",
+    "get-user-media-promise": "^1.1.1",
+    "meteor-node-stubs": "~0.2.4",
+    "microphone-stream": "^3.0.7",
+    "mumble": "^0.3.11",
+    "socket.io": "^1.7.3",
+    "socket.io-client": "^1.7.3",
+    "socket.io-stream": "^0.9.1"
+  }
+}

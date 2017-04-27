@@ -1,0 +1,26 @@
+<head>
+  <title>meteormumble</title>
+</head>
+
+<body>
+   {{> tester }}
+</body>
+
+<template name="tester">
+    <h1>ASS</h1>
+    <input type="text" id="name"/>
+    <button id="connect">CONNECT</button>
+    <input type="text" id="msg"/>
+    <button id="message">SEND MESSAGE</button>
+    <button id="voice">SEND VOICE</button>
+    <button id="stop-voice">STOP VOICE</button><br>
+    <ul>
+        {{#each room}}
+            <li>{{person}}</li>
+        {{/each}}
+    </ul>
+</template>
+
+<template name="room">
+    <li>{{label}}</li>
+</template>
