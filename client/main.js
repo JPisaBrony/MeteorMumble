@@ -7,9 +7,19 @@ var getUserMedia = require('get-user-media-promise');
 var MicrophoneStream = require('microphone-stream');
 var microphone = null;
 
+Session.set("room-list", [{ person: "not connected" }]);
+
 socket.on('connect', function() {
     console.log('client connected');
 });
+
+socket.on('getRoomList', function(data) {
+    Session.set("room-list", data);
+});
+
+window.onbeforeunload = function(e) {
+    socket.disconnect();
+}
 
 function convertFloat32ToInt16(buffer) {
     var len = buffer.length;
@@ -22,21 +32,14 @@ function convertFloat32ToInt16(buffer) {
 }
 
 Template.tester.helpers({
-    room: function() {
-        return [{person: 'twilight'}, {person: 'rainbow dash'}];
+    room: function() {        
+        return Session.get("room-list");
     },
 });
 
 Template.tester.events = {
     'click #connect': function() {
-        //Meteor.call('newCon', $('#name').val(), function(error, response) {
-        //    console.log(response);
-        //});
         socket.emit('mumble-connect', $('#name').val());
-        
-        socket.on('people-joined', function(data) {
-            peopleInRoom = data;
-        });
     },
     'click #message': function() {
         Meteor.call('sendMsg', $('#msg').val(), $('#name').val(), function(error, response) {

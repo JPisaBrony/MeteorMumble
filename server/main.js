@@ -8,6 +8,17 @@ var cons = [];
 var server = http.createServer();
 var io = socketio(server);
 
+function getRoomList(con, socket, user) {
+    var people = [];
+    var users = con.users();
+    if(user != null)
+        people.push({person: user.name});
+    for(var u in users)
+        people.push({person: users[u].name});
+    console.log(people);
+    socket.emit('getRoomList', people);
+}
+
 io.on('connection', function(socket) {
     console.log('new client');
 
@@ -32,11 +43,24 @@ io.on('connection', function(socket) {
             connection.on('voice', function(user) {
                 console.log("VOICE " + user);
             });
+            connection.on('user-connect', function(user) {
+                getRoomList(connection, socket, user);
+            });
+            connection.on('user-disconnect', function(user) {
+                getRoomList(connection, socket, null);
+            });
+            connection.on('ready', function() {
+                getRoomList(connection, socket, null);
+
+                ss(socket).on('voice', function(stream) {
+                    stream.pipe(connection.inputStream());
+                });
+            });
 
             connection.authenticate(data);
 
-            ss(socket).on('voice', function(stream) {
-                stream.pipe(connection.inputStream());
+            socket.on('disconnect', function() {
+                connection.disconnect();
             });
         });
     });
@@ -95,16 +119,5 @@ Meteor.startup(() => {
                 }
             }
         },
-        sendVoice: function(name, data) {
-            //console.log(name);
-            /*
-            var recp = { session: [], channel_id:[0]};
-            for(var i = 0; i < cons.length; i++) {
-                if(cons[i].name == name) {
-                    var curCon = cons[i].con;
-                }
-            }
-            */
-        }
     });
 });
