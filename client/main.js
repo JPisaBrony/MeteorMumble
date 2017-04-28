@@ -31,20 +31,15 @@ function convertFloat32ToInt16(buffer) {
     return buf.buffer;
 }
 
-Template.tester.helpers({
+Template.main.helpers({
     room: function() {        
         return Session.get("room-list");
     },
 });
 
-Template.tester.events = {
+Template.main.events = {
     'click #connect': function() {
         socket.emit('mumble-connect', $('#name').val());
-    },
-    'click #message': function() {
-        Meteor.call('sendMsg', $('#msg').val(), $('#name').val(), function(error, response) {
-            console.log(response);
-        });
     },
     'click #voice': function() {
         var ssStream = ss.createStream();

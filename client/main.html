@@ -1,17 +1,16 @@
 <head>
-  <title>meteormumble</title>
+  <title>MeteorMumble</title>
 </head>
 
 <body>
-   {{> tester }}
+   {{> main }}
 </body>
 
-<template name="tester">
-    <h1>ASS</h1>
+<template name="main">
+    <h1>MeteorMumble</h1>
+    <label>Name</label><br>
     <input type="text" id="name"/>
-    <button id="connect">CONNECT</button>
-    <input type="text" id="msg"/>
-    <button id="message">SEND MESSAGE</button>
+    <button id="connect">Connect</button>
     <button id="voice">SEND VOICE</button>
     <button id="stop-voice">STOP VOICE</button><br>
     <ul>
@@ -19,8 +18,4 @@
             <li>{{person}}</li>
         {{/each}}
     </ul>
-</template>
-
-<template name="room">
-    <li>{{label}}</li>
 </template>
