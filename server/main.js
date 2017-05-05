@@ -27,7 +27,10 @@ Meteor.startup(() => {
                 if(error) { throw new Error(error) };
 
                 console.log('Connected');
-
+                var voiceOutStream = new ss.createStream();
+                ss(socket).emit('voice', voiceOutStream);
+                //connection.outputStream(true).pipe(voiceOutStream);
+                
                 connection.on('initialized', function() {
                     console.log('initilized');
                 });
@@ -40,8 +43,8 @@ Meteor.startup(() => {
                 connection.on('voice-end', function(user) {
                     console.log("VOICE END: " + user);
                 });
-                connection.on('voice', function(user) {
-                    console.log("VOICE " + user);
+                connection.on('voice', function(voice) {
+                    voiceOutStream.write(voice);
                 });
                 connection.on('user-connect', function(user) {
                     getRoomList(connection, socket, user);
