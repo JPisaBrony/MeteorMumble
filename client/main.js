@@ -7,21 +7,16 @@ var getUserMedia = require('get-user-media-promise');
 var MicrophoneStream = require('microphone-stream');
 var microphone = null;
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var Writable = require('web-audio-stream/writable');
 
-function bufferToFloat32(data) {
-    var j = 0;
-    var l = data.length;
-    var out = new Float32Array(l/2);
-    for(var i = 0; i < l; i+=2) {
-        var sign = data[i+1] & (1 << 7);
-        var result = (((data[i+1] & 0xFF) << 8) | (data[i] & 0xFF));
-        if(sign)
-            result = 0xFFFF0000 | result;
-        out[i-j] = result / 0xFFFF;
-        j++;
-    }
-    return out;
-}
+var writable = Writable(audioCtx.destination, {
+    context: audioCtx,
+    channels: 1,
+    sampleRate: 48000,
+    samplesPerFrame: 480,
+    mode: Writable.BUFFER_MODE,
+    audoend: true
+});
 
 function float32ToInt16(buffer) {
     var len = buffer.length;
@@ -45,13 +40,10 @@ socket.on('getRoomList', function(data) {
 
 ss(socket).on('voice', function(stream) {
     stream.on('data', function(data) {
-        var floatArray = bufferToFloat32(data);
-        var audioBuffer = audioCtx.createBuffer(1, floatArray.length, audioCtx.sampleRate);
-        var source = audioCtx.createBufferSource();
-        audioBuffer.getChannelData(0).set(floatArray);
-        source.buffer = audioBuffer;
-        source.connect(audioCtx.destination);
-        source.start();
+        var floatArray = [];
+        for(var i = 0; i < data.length; i+=2)
+            floatArray.push(data.readInt16LE(i) / 0xFFFF);
+        writable.write(floatArray);
     });
 });
 

@@ -12,6 +12,7 @@
     "mumble": "^0.3.11",
     "socket.io": "^1.7.3",
     "socket.io-client": "^1.7.3",
-    "socket.io-stream": "^0.9.1"
+    "socket.io-stream": "^0.9.1",
+    "web-audio-stream": "^3.0.1"
   }
 }
